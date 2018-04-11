@@ -5,10 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import worldcup.dtos.GamesResponseDto;
 import worldcup.entities.Game;
 import worldcup.repository.GameRepository;
+import worldcup.utils.DateUtils;
 
-import java.util.ArrayList;
+import java.util.Date;
+
 @RestController
 @RequestMapping(path = "/games")
 public class GamesController {
@@ -19,8 +22,19 @@ public class GamesController {
     @RequestMapping(method = RequestMethod.GET, path = "")
     @ResponseBody
     public ResponseEntity<?> getAllGames() {
+        GamesResponseDto games = new GamesResponseDto();
+        Date now = new Date();
+
         Iterable<Game> all = gameRepository.findAll();
-        ArrayList<Game> games = Lists.newArrayList(all);
+        Lists.newArrayList(all).forEach(game -> {
+            if(DateUtils.isToday(game.getGameTime())) {
+                games.getToday().add(game);
+            } else if(DateUtils.isBeforeDay(game.getGameTime(), now)) {
+                games.getFinished().add(game);
+            } else {
+                games.getFuture().add(game);
+            }
+        });
         return new ResponseEntity<>(games, HttpStatus.OK);
     }
 
