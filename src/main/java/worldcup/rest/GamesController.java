@@ -16,7 +16,7 @@ public class GamesController {
     @Autowired
     private GameRepository gameRepository;
 
-    @RequestMapping(method = RequestMethod.GET, path = "/")
+    @RequestMapping(method = RequestMethod.GET, path = "")
     @ResponseBody
     public ResponseEntity<?> getAllGames() {
         Iterable<Game> all = gameRepository.findAll();

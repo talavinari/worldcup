@@ -25,7 +25,7 @@ public class UsersController {
     @Autowired
     private UserRepository userRepository;
 
-    @RequestMapping(method = RequestMethod.GET, path = "/")
+    @RequestMapping(method = RequestMethod.GET, path = "")
     @ResponseBody
     public ResponseEntity<?> getAllUsers() {
         Iterable<User> all = userRepository.findAll();

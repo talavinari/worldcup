@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import worldcup.entities.Group;
-import worldcup.entities.User;
 import worldcup.repository.GroupRepository;
-import worldcup.repository.UserRepository;
 
 import java.util.ArrayList;
 
@@ -27,7 +25,7 @@ public class GroupsController {
     @Autowired
     private GroupRepository groupRepository;
 
-    @RequestMapping(method = RequestMethod.GET, path = "/")
+    @RequestMapping(method = RequestMethod.GET, path = "")
     @ResponseBody
     public ResponseEntity<?> getAllUsers() {
         Iterable<Group> all = groupRepository.findAll();

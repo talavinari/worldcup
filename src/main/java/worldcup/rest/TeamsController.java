@@ -6,14 +6,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 import worldcup.entities.Team;
-import worldcup.entities.User;
 import worldcup.repository.TeamRepository;
-import worldcup.repository.UserRepository;
 
 import java.util.ArrayList;
 
@@ -27,10 +23,15 @@ public class TeamsController {
     @Autowired
     private TeamRepository teamRepository;
 
-    @RequestMapping(method = RequestMethod.GET, path = "/")
+    @RequestMapping(method = RequestMethod.GET, path = "")
     @ResponseBody
-    public ResponseEntity<?> getAllUsers() {
-        Iterable<Team> all = teamRepository.findAll();
+    public ResponseEntity<?> getAllTeams(@RequestParam(name = "rank", required = false) String rank) {
+        Iterable<Team> all;
+        if(StringUtils.isEmpty(rank)) {
+            all = teamRepository.findAll();
+        } else {
+            all = teamRepository.findByRank(rank);
+        }
         ArrayList<Team> bets = Lists.newArrayList(all);
         return new ResponseEntity<>(bets, HttpStatus.OK);
     }

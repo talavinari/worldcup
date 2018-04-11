@@ -38,7 +38,7 @@ public class BetsController {
     private GroupRepository groupRepository;
 
 
-    @RequestMapping(method = RequestMethod.GET, path = "/")
+    @RequestMapping(method = RequestMethod.GET, path = "")
     @ResponseBody
     public ResponseEntity<?> getAllBets() {
         Iterable<Bet> all = betRepository.findAll();
@@ -57,6 +57,9 @@ public class BetsController {
 
         Iterable<Group> all = groupRepository.findAll();
         Optional<Group> first = Lists.newArrayList(all).stream().filter(x -> x.getId().equals(betRequest.getGroupId())).findFirst();
+
+        // TODO - add validations that all fields exist
+
         User newUser = new User(betRequest.getName(), betRequest.getEmail(), 0 , first.get() , null);
         userRepository.save(newUser);
         Bet bet = new Bet(
