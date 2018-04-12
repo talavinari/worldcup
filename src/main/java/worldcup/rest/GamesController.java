@@ -6,20 +6,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import worldcup.Services.PointsCalculatorService;
+import worldcup.Services.SoccerPlayersService;
 import worldcup.dtos.GameResultDto;
 import worldcup.dtos.GamesResponseDto;
 import worldcup.entities.Game;
 import worldcup.entities.SoccerPlayer;
 import worldcup.repository.GameRepository;
-import worldcup.repository.SoccerPlayerRepository;
 import worldcup.utils.DateUtils;
 
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/games")
@@ -28,7 +26,7 @@ public class GamesController {
     @Autowired
     private GameRepository gameRepository;
     @Autowired
-    private SoccerPlayerRepository soccerPlayerRepository;
+    private SoccerPlayersService soccerPlayersService;
     @Autowired
     private PointsCalculatorService pointsCalculatorService;
 
@@ -69,20 +67,17 @@ public class GamesController {
     }
 
     private void updateScorers(GameResultDto gameResult, Game game) {
-        Iterable<SoccerPlayer> allScorers = soccerPlayerRepository.findAll();
-        Map<String, SoccerPlayer> scorersMap = Lists.newArrayList(allScorers)
-                .stream()
-                .collect(Collectors.toMap(x -> x.getName(), Function.identity()));
+        Map<String, SoccerPlayer> scorersMap = soccerPlayersService.getAllSoccerPlayersByName();
         if(gameResult!=null) {
             gameResult.getSoccerPlayers()
                     .stream()
                     .forEach(player -> {
                         if(scorersMap.containsKey(player.getName())) {
                             scorersMap.get(player.getName()).addGoals(player.getNumberOfGoals());
-                            soccerPlayerRepository.save(scorersMap.get(player.getName()));
+                            soccerPlayersService.save(scorersMap.get(player.getName()));
                         } else {
                             SoccerPlayer newSoccerPlayer = new SoccerPlayer(player.getName(), player.getNumberOfGoals());
-                            SoccerPlayer savedSoccerPlayer = soccerPlayerRepository.save(newSoccerPlayer);
+                            SoccerPlayer savedSoccerPlayer = soccerPlayersService.save(newSoccerPlayer);
                             scorersMap.put(savedSoccerPlayer.getName(), savedSoccerPlayer);
                         }
                     });

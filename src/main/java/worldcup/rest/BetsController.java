@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import worldcup.Services.TeamsService;
 import worldcup.dtos.BetDto;
 import worldcup.dtos.BetDtoResponse;
 import worldcup.entities.Bet;
@@ -16,14 +17,10 @@ import worldcup.entities.Team;
 import worldcup.entities.User;
 import worldcup.repository.BetRepository;
 import worldcup.repository.GroupRepository;
-import worldcup.repository.TeamRepository;
 import worldcup.repository.UserRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toSet;
 
 
 @RestController
@@ -36,14 +33,13 @@ public class BetsController {
     private BetRepository betRepository;
 
     @Autowired
-    private TeamRepository teamRepository;
-
-    @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private GroupRepository groupRepository;
 
+    @Autowired
+    private TeamsService teamsService;
 
     @RequestMapping(method = RequestMethod.GET, path = "")
     @ResponseBody
@@ -89,10 +85,8 @@ public class BetsController {
     }
 
     private void validateTeamNames(BetDto bet) {
-        ArrayList<Team> teams = Lists.newArrayList(teamRepository.findAll());
-        Map<String, Set<Team>> groupedBy = teams
-                .stream()
-                .collect(groupingBy(Team::getRank, toSet()));
+        ArrayList<Team> teams = teamsService.getAllTeams();
+        Map<String, Set<Team>> groupedBy = teamsService.getTeamsByRank();
         if(!groupedBy.get("1").contains(new Team(bet.getRankA()))) {
             throw new RuntimeException(bet.getRankA() + " is NOT a Rank 1 team");
         }
