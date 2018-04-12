@@ -12,11 +12,17 @@ import java.util.stream.Collectors;
 public class GameServiceImpl implements GameService {
 
     public static final int GROUP_STAGE_GAME_COUNT = 48;
+    public static final int TOTAL_GAME_COUNT = 64;
     private GameRepository gameRepository;
 
     @Override
     public boolean isKnockOutStage() {
         return getFinishedGames().size() >= GROUP_STAGE_GAME_COUNT;
+    }
+
+    @Override
+    public boolean isTournamentFinished() {
+        return getFinishedGames().size() >= TOTAL_GAME_COUNT;
     }
 
     @Override

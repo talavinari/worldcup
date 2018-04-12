@@ -1,19 +1,16 @@
 package worldcup.Services;
 
-import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import worldcup.dtos.TeamGamesBalance;
 import worldcup.dtos.TeamGoalsBalance;
-import worldcup.entities.Game;
 import worldcup.entities.SoccerPlayer;
-import worldcup.entities.Team;
 import worldcup.entities.User;
-import worldcup.repository.SoccerPlayerRepository;
-import worldcup.repository.UserRepository;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class PointsCalculatorServiceImpl implements PointsCalculatorService {
@@ -27,10 +24,10 @@ public class PointsCalculatorServiceImpl implements PointsCalculatorService {
     private final static Integer POINTS_FOR_WORST_DEFENSE_TEAM = 5;
 
     @Autowired
-    private UserRepository userRepository;
+    private UsersService usersService;
 
     @Autowired
-    private SoccerPlayerRepository soccerPlayerRepository;
+    private SoccerPlayersService soccerPlayersService;
 
     @Autowired
     private TeamsService teamsService;
@@ -41,18 +38,18 @@ public class PointsCalculatorServiceImpl implements PointsCalculatorService {
     @Override
     public void calculateUsersPoint() {
 
-        Team bestAttack = null;
-        Team worstDefense = null;
+        List<String> bestAttack = null;
+        List<String> worstDefense = null;
         //TODO select from DB if all group stage finished - handle points for worst + best teams
         if (gameService.isKnockOutStage()) {
-            Map<String, TeamGoalsBalance> stringTeamGoalsBalanceMap = calculateTeamGoals();
-            bestAttack = getBestAttack(stringTeamGoalsBalanceMap);
-            worstDefense = getWorstDefense(stringTeamGoalsBalanceMap);
+            Map<String, TeamGoalsBalance> TeamGoalsBalanceMap = teamsService.calculateTeamGoalsBalance();
+            bestAttack = teamsService.getBestAttack(TeamGoalsBalanceMap);
+            worstDefense = teamsService.getWorstDefense(TeamGoalsBalanceMap);
         }
 
-        Map<String, TeamGamesBalance> teamResults = getTeamResults();
+        Map<String, TeamGamesBalance> teamResults = teamsService.getTeamGamesBalance();
         Map<String, Integer> teamNameToPoints = calculateTeamPoints(teamResults);
-        ArrayList<User> users = Lists.newArrayList(userRepository.findAll());
+        ArrayList<User> users = usersService.getAllUsers();
         Map<User, Integer> userToPoints = new HashMap<>();
 
         for (User user : users) {
@@ -65,9 +62,9 @@ public class PointsCalculatorServiceImpl implements PointsCalculatorService {
         }
 
         //TODO if tournament finished add points for scorer. - calculate list of best
-        SoccerPlayer bestScorer = null;
-        if (isTournamentFinished()) {
-            bestScorer = getBestScorer();
+        List<SoccerPlayer> bestScorer = null;
+        if (gameService.isTournamentFinished()) {
+            bestScorer = soccerPlayersService.getBestScorer();
         }
         updateUsersPoints(bestAttack, worstDefense, bestScorer);
     }
@@ -91,100 +88,13 @@ public class PointsCalculatorServiceImpl implements PointsCalculatorService {
         return points;
     }
 
-
-    private boolean isTournamentFinished() {
-        return false;
-    }
-
-    private boolean isKnokOutStage() {
-        return false;
-    }
-
-    private Map<String, TeamGoalsBalance> calculateTeamGoals() {
-        Map<String, TeamGoalsBalance> calcMap = new HashMap<>();
-        List<Game> finishedGames = gameService.getFinishedGames();
-        finishedGames.forEach(game -> {
-            String team1 = game.getTeam1();
-            String team2 = game.getTeam2();
-
-            calcMap.putIfAbsent(team1, new TeamGoalsBalance(team1, 0, 0));
-            calcMap.putIfAbsent(team2, new TeamGoalsBalance(team2, 0, 0));
-                    TeamGoalsBalance firstTeamCalc = calcMap.get(team1);
-                    firstTeamCalc.setGoalsFor(firstTeamCalc.getGoalsFor() + game.getScore1());
-                    firstTeamCalc.setGoalsAgainst(firstTeamCalc.getGoalsAgainst() + game.getScore2());
-                    TeamGoalsBalance secondTeamCalc = calcMap.get(team2);
-                    secondTeamCalc.setGoalsFor(secondTeamCalc.getGoalsFor() + game.getScore2());
-                    secondTeamCalc.setGoalsAgainst(secondTeamCalc.getGoalsAgainst() + game.getScore1());
-                }
-        );
-        return calcMap;
-    }
-
-
-    private Map<String, TeamGamesBalance> getTeamResults() {
-        Map<String, TeamGamesBalance> teamBalanceMap = new HashMap<>();
-
-        Map<String, String> teamsToRank = teamsService.getTeamsToRank();
-        for (Game game : gameService.getFinishedGames()) {
-            Integer team1Rank = Integer.valueOf(teamsToRank.get(game.getTeam1()));
-            Integer team2Rank = Integer.valueOf(teamsToRank.get(game.getTeam2()));
-            teamBalanceMap.putIfAbsent(game.getTeam1(), new TeamGamesBalance());
-            teamBalanceMap.putIfAbsent(game.getTeam2(), new TeamGamesBalance());
-            if (game.getScore1().equals(game.getScore2())) {
-                teamBalanceMap.get(game.getTeam1()).incrementTie();
-                teamBalanceMap.get(game.getTeam2()).incrementTie();
-            } else if (game.getScore1().compareTo(game.getScore2()) > 0) {
-                teamBalanceMap.get(game.getTeam1()).incrementTotalWin();
-                teamBalanceMap.get(game.getTeam2()).incrementTotalLoses();
-                if (team1Rank > team2Rank) {
-                    teamBalanceMap.get(game.getTeam1()).incrementWinsAgainstBetterRankTeam();
-                    teamBalanceMap.get(game.getTeam2()).incrementLosesAgainstLowerRankTeam();
-                }
-            } else {
-                teamBalanceMap.get(game.getTeam2()).incrementTotalWin();
-                teamBalanceMap.get(game.getTeam1()).incrementTotalLoses();
-                if (team2Rank > team1Rank) {
-                    teamBalanceMap.get(game.getTeam2()).incrementWinsAgainstBetterRankTeam();
-                    teamBalanceMap.get(game.getTeam1()).incrementLosesAgainstLowerRankTeam();
-                }
-            }
-        }
-
-
-        return teamBalanceMap;
-    }
-
-    private SoccerPlayer getBestScorer() {
-        List<SoccerPlayer> soccerPlayers =
-                Lists.newArrayList(soccerPlayerRepository.findAll())
-                        .stream()
-                        .sorted(Comparator.comparing(SoccerPlayer::getNumberOfGoals).reversed())
-                        .collect(Collectors.toList());
-        if (soccerPlayers.size() > 0) {
-            return soccerPlayers.get(0);
-        } else {
-            return null;
-        }
-    }
-
-    private Team getWorstDefense(Map<String, TeamGoalsBalance> stringTeamGoalsBalanceMap) {
-        // TODO - list of worst
-        return null;
-    }
-
-    private Team getBestAttack(Map<String, TeamGoalsBalance> teamToBalance) {
-        teamToBalance.entrySet().stream().map(x -> x.getValue());
-        // TODO - list of best
-        return null;
-    }
-
-    private void updateUsersPoints(Team bestAttack, Team worstDefense, SoccerPlayer bestScorer) {
+    private void updateUsersPoints(List<String> bestAttack, List<String> worstDefense, List<SoccerPlayer> bestScorer) {
         // TODO
-        ArrayList<User> users = Lists.newArrayList(userRepository.findAll());
+        ArrayList<User> users = usersService.getAllUsers();
 
-        if (bestScorer != null && bestScorer.getNumberOfGoals() > 0) {
-
-        }
+//        if (bestScorer != null && bestScorer.getNumberOfGoals() > 0) {
+//
+//        }
     }
 
 }

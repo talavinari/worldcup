@@ -14,6 +14,14 @@ public class TeamGoalsBalance {
         this.goalsAgainst = goalsAgainst;
     }
 
+    public String getTeamName() {
+        return teamName;
+    }
+
+    public void setTeamName(String teamName) {
+        this.teamName = teamName;
+    }
+
     public Integer getGoalsFor() {
         return goalsFor;
     }
@@ -33,7 +41,8 @@ public class TeamGoalsBalance {
     @Override
     public String toString() {
         return "TeamGoalsBalance{" +
-                "goalsFor=" + goalsFor +
+                "teamName='" + teamName + '\'' +
+                ", goalsFor=" + goalsFor +
                 ", goalsAgainst=" + goalsAgainst +
                 '}';
     }

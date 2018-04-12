@@ -1,6 +1,7 @@
 package worldcup.dtos;
 
 public class TeamGamesBalance {
+    private String teamName;
     private int totalWins;
     private int winsAgaintBetterRankTeam;
     private int loses;
@@ -8,6 +9,10 @@ public class TeamGamesBalance {
     private int ties;
 
     public TeamGamesBalance() {
+    }
+
+    public TeamGamesBalance(String teamName) {
+        this.teamName = teamName;
         this.totalWins = 0;
         this.winsAgaintBetterRankTeam = 0;
         this.loses = 0;
@@ -15,12 +20,21 @@ public class TeamGamesBalance {
         this.ties = 0;
     }
 
-    public TeamGamesBalance(int totalWins, int winsAgaintBetterRankTeam, int loses, int losesAgainstLowerRankTeam, int ties) {
+    public TeamGamesBalance(String teamName, int totalWins, int winsAgaintBetterRankTeam, int loses, int losesAgainstLowerRankTeam, int ties) {
+        this.teamName = teamName;
         this.totalWins = totalWins;
         this.winsAgaintBetterRankTeam = winsAgaintBetterRankTeam;
         this.loses = loses;
         this.losesAgainstLowerRankTeam = losesAgainstLowerRankTeam;
         this.ties = ties;
+    }
+
+    public String getTeamName() {
+        return teamName;
+    }
+
+    public void setTeamName(String teamName) {
+        this.teamName = teamName;
     }
 
     public int getTotalWins() {
@@ -88,7 +102,8 @@ public class TeamGamesBalance {
     @Override
     public String toString() {
         return "TeamGamesBalance{" +
-                "totalWins=" + totalWins +
+                "teamName='" + teamName + '\'' +
+                ", totalWins=" + totalWins +
                 ", winsAgaintBetterRankTeam=" + winsAgaintBetterRankTeam +
                 ", loses=" + loses +
                 ", losesAgainstLowerRankTeam=" + losesAgainstLowerRankTeam +
