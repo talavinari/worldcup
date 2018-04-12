@@ -1,7 +1,6 @@
 package worldcup.entities;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 
 @Entity
 @Table(name = "groups")
