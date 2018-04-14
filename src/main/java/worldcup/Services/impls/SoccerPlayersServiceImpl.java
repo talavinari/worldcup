@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import worldcup.Services.interfaces.SoccerPlayersService;
+import worldcup.api.dtos.SoccerPlayerStatDto;
+import worldcup.api.dtos.SoccerPlayersStatsDto;
 import worldcup.persistance.entities.SoccerPlayer;
 import worldcup.persistance.repository.SoccerPlayerRepository;
 
@@ -36,10 +38,7 @@ public class SoccerPlayersServiceImpl implements SoccerPlayersService {
     @Override
     public List<SoccerPlayer> getBestScorer() {
         List<SoccerPlayer> soccerPlayers =
-                Lists.newArrayList(soccerPlayerRepository.findAll())
-                        .stream()
-                        .sorted(Comparator.comparing(SoccerPlayer::getNumberOfGoals).reversed())
-                        .collect(Collectors.toList());
+                getAllSoccerPlayersSortedByGoals();
         if (soccerPlayers.size() > 0) {
             Integer numberOfGoals = soccerPlayers.get(0).getNumberOfGoals();
             return soccerPlayers
@@ -49,5 +48,25 @@ public class SoccerPlayersServiceImpl implements SoccerPlayersService {
         } else {
             return Lists.newArrayList();
         }
+    }
+
+    @Override
+    public List<SoccerPlayer> getAllSoccerPlayersSortedByGoals() {
+        return Lists.newArrayList(soccerPlayerRepository.findAll())
+                .stream()
+                .sorted(Comparator.comparing(SoccerPlayer::getNumberOfGoals).reversed())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public SoccerPlayersStatsDto getSoccerPlayersStats() {
+        List<SoccerPlayer> allSoccerPlayers = getAllSoccerPlayersSortedByGoals();
+        SoccerPlayersStatsDto soccerPlayersStatsDto =
+                new SoccerPlayersStatsDto(Lists.newArrayList());
+        allSoccerPlayers.forEach(x-> {
+            soccerPlayersStatsDto.getSoccerPlayersStats()
+                    .add(new SoccerPlayerStatDto(x.getName(), x.getNumberOfGoals()));
+        });
+        return soccerPlayersStatsDto;
     }
 }
