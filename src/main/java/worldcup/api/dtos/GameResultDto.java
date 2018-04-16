@@ -4,7 +4,6 @@ import java.util.List;
 
 public class GameResultDto {
 
-    private Long id;
     private String team1;
     private String team2;
     private Integer score1;
@@ -18,13 +17,6 @@ public class GameResultDto {
     public GameResultDto() {
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getTeam1() {
         return team1;
@@ -69,8 +61,7 @@ public class GameResultDto {
     @Override
     public String toString() {
         return "GameResultDto{" +
-                "id=" + id +
-                ", team1='" + team1 + '\'' +
+                "  team1='" + team1 + '\'' +
                 ", team2='" + team2 + '\'' +
                 ", score1=" + score1 +
                 ", score2=" + score2 +

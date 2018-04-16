@@ -48,8 +48,8 @@ public class ConverterServiceImpl implements ConverterService {
     }
 
     @Override
-    public GameDto covertGameToGameDto(Game game) {
-        return new GameDto(
+    public GameResponseDto covertGameToGameDto(Game game) {
+        return new GameResponseDto(
                 game.getId(),
                 game.getTeam1(),
                 game.getTeam2(),

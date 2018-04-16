@@ -1,5 +1,6 @@
 package worldcup.api.rest;
 
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,9 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import worldcup.Services.interfaces.ConverterService;
 import worldcup.Services.interfaces.GameService;
 import worldcup.Services.interfaces.PointsCalculatorService;
-import worldcup.api.dtos.GameMetadataDto;
-import worldcup.api.dtos.GameResultDto;
-import worldcup.api.dtos.GamesResponseDto;
+import worldcup.api.dtos.*;
 import worldcup.persistance.entities.Game;
 
 import javax.transaction.Transactional;
@@ -40,13 +39,21 @@ public class GamesController {
         return new ResponseEntity<>(converterService.covertGameToGameDto(gameService.findById(gameId)), HttpStatus.OK);
     }
 
+    @RequestMapping(method = RequestMethod.POST, path = "/{gameId}")
+    @ResponseBody
+    @Transactional
+    public ResponseEntity<?> updateGameResult(@PathVariable Long gameId, @RequestBody GameResultDto gameResult){
+        Game game = gameService.updateGameResult(gameId, gameResult);
+        pointsCalculatorService.calculateUsersPoint();
+        return new ResponseEntity<>(converterService.covertGameToGameDto(game), HttpStatus.OK);
+    }
+
     @RequestMapping(method = RequestMethod.POST, path = "")
     @ResponseBody
     @Transactional
-    public ResponseEntity<?> updateGameResult(@RequestBody GameResultDto gameResult){
-        Game game = gameService.updateGameResult(gameResult);
-        pointsCalculatorService.calculateUsersPoint();
-        return new ResponseEntity<>(converterService.covertGameToGameDto(game), HttpStatus.OK);
+    public ResponseEntity<?> createGame(@RequestBody NewGameDto newGameDto){
+        Game createdGame = gameService.createGame(newGameDto);
+        return new ResponseEntity<>(converterService.covertGameToGameDto(createdGame), HttpStatus.OK);
     }
 
 

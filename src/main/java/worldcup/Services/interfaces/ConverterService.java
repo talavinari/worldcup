@@ -12,7 +12,7 @@ public interface ConverterService {
     Bet covertBetDtoToBet(BetDto betRequest, User newUser);
     BetDtoResponse covertBetToBetDtoResponse(Bet x);
 
-    GameDto covertGameToGameDto(Game game);
+    GameResponseDto covertGameToGameDto(Game game);
 
     GroupDto covertGroupToGroupDto(Group group);
     List<GroupDto> covertGroupsToGroupDtos(List<Group> groups);

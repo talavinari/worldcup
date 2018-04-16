@@ -4,9 +4,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class GamesResponseDto {
-    List<GameDto> today;
-    List<GameDto> future;
-    List<GameDto> finished;
+    List<GameResponseDto> today;
+    List<GameResponseDto> future;
+    List<GameResponseDto> finished;
 
     public GamesResponseDto() {
         today = new LinkedList<>();
@@ -14,33 +14,33 @@ public class GamesResponseDto {
         finished = new LinkedList<>();
     }
 
-    public GamesResponseDto(List<GameDto> today, List<GameDto> future, List<GameDto> finished) {
+    public GamesResponseDto(List<GameResponseDto> today, List<GameResponseDto> future, List<GameResponseDto> finished) {
         this.today = today;
         this.future = future;
         this.finished = finished;
     }
 
-    public List<GameDto> getToday() {
+    public List<GameResponseDto> getToday() {
         return today;
     }
 
-    public void setToday(List<GameDto> today) {
+    public void setToday(List<GameResponseDto> today) {
         this.today = today;
     }
 
-    public List<GameDto> getFuture() {
+    public List<GameResponseDto> getFuture() {
         return future;
     }
 
-    public void setFuture(List<GameDto> future) {
+    public void setFuture(List<GameResponseDto> future) {
         this.future = future;
     }
 
-    public List<GameDto> getFinished() {
+    public List<GameResponseDto> getFinished() {
         return finished;
     }
 
-    public void setFinished(List<GameDto> finished) {
+    public void setFinished(List<GameResponseDto> finished) {
         this.finished = finished;
     }
 

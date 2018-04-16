@@ -4,6 +4,7 @@ import worldcup.GameStage;
 import worldcup.api.dtos.GameMetadataDto;
 import worldcup.api.dtos.GameResultDto;
 import worldcup.api.dtos.GamesResponseDto;
+import worldcup.api.dtos.NewGameDto;
 import worldcup.persistance.entities.Game;
 
 import java.util.List;
@@ -21,11 +22,13 @@ public interface GameService {
 
     Game save(Game game);
 
-    Game updateGameResult(GameResultDto gameResult);
+    Game updateGameResult(Long gameId, GameResultDto gameResult);
 
     GamesResponseDto getAllGamesByGameTime(String gameStage);
 
     List<Game> getGamesByStage(GameStage gameStage);
 
     Game updateGameMetadata(GameMetadataDto gameMetadataDto, Long gameId);
+
+    Game createGame(NewGameDto newGameDto);
 }

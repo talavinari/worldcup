@@ -1,6 +1,7 @@
 package worldcup.Services.impls;
 
 import com.google.common.collect.Lists;
+import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import worldcup.GameStage;
@@ -8,10 +9,7 @@ import worldcup.Services.interfaces.ConverterService;
 import worldcup.Services.interfaces.GameService;
 import worldcup.Services.interfaces.SoccerPlayersService;
 import worldcup.Services.interfaces.TeamsService;
-import worldcup.api.dtos.GameDto;
-import worldcup.api.dtos.GameMetadataDto;
-import worldcup.api.dtos.GameResultDto;
-import worldcup.api.dtos.GamesResponseDto;
+import worldcup.api.dtos.*;
 import worldcup.persistance.entities.Game;
 import worldcup.persistance.entities.SoccerPlayer;
 import worldcup.persistance.entities.Team;
@@ -80,8 +78,8 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Game updateGameResult(GameResultDto gameResult) {
-        Game game = validateGameResult(gameResult);
+    public Game updateGameResult(Long gameId, GameResultDto gameResult) {
+        Game game = validateGameResult(gameId, gameResult);
         updateGameResult(gameResult, game);
         updateScorers(gameResult);
         return game;
@@ -99,13 +97,13 @@ public class GameServiceImpl implements GameService {
             gamesList = getAllGames();
         }
         gamesList.forEach(game -> {
-            GameDto gameDto = converterService.covertGameToGameDto(game);
+            GameResponseDto gameResponseDto = converterService.covertGameToGameDto(game);
             if (DateUtils.isToday(game.getGameTime())) {
-                gamesDto.getToday().add(gameDto);
+                gamesDto.getToday().add(gameResponseDto);
             } else if (DateUtils.isBeforeDay(game.getGameTime(), now)) {
-                gamesDto.getFinished().add(gameDto);
+                gamesDto.getFinished().add(gameResponseDto);
             } else {
-                gamesDto.getFuture().add(gameDto);
+                gamesDto.getFuture().add(gameResponseDto);
             }
         });
         return gamesDto;
@@ -122,6 +120,18 @@ public class GameServiceImpl implements GameService {
         validateForDataUpdate(gameMetadataDto, game);
         updateGameMetadataEntity(gameMetadataDto,game);
         return game;
+    }
+
+    @Override
+    public Game createGame(NewGameDto dto) {
+        Game newGame = new Game();
+        newGame.setTeam1(dto.getTeam1());
+        newGame.setTeam2(dto.getTeam2());
+        //newGame.setGameTime(newGame.getGameTime());
+        newGame.setGameTime(dto.getGameTime());
+        newGame.setStage(GameStage.valueOf(dto.getStage()));
+        newGame.setShouldOverride(dto.getShouldOverride());
+        return gameRepository.save(newGame);
     }
 
     private void updateGameMetadataEntity(GameMetadataDto gameMetadataDto, Game game) {
@@ -185,8 +195,8 @@ public class GameServiceImpl implements GameService {
         save(game);
     }
 
-    private Game validateGameResult(GameResultDto gameResult) {
-        Game game = findById(gameResult.getId());
+    private Game validateGameResult(Long gameId, GameResultDto gameResult) {
+        Game game = findById(gameId);
         validateForResultUpdate(gameResult);
 
         return game;

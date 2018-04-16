@@ -3,7 +3,7 @@ package worldcup.api.dtos;
 import java.util.Date;
 import java.util.Objects;
 
-public class GameDto {
+public class GameResponseDto {
 
     private Long id;
     private String team1;
@@ -18,12 +18,12 @@ public class GameDto {
     private String stage;
     private Boolean shouldOverride;
 
-    public GameDto() {
+    public GameResponseDto() {
     }
 
-    public GameDto(Long id, String team1, String team2, Integer score1, Integer score2,
-                   Integer extraTimeScore1, Integer extraTimeScore2, Integer penaltyScore1,
-                   Integer penaltyScore2, Date gameTime, String stage, Boolean shouldOverride) {
+    public GameResponseDto(Long id, String team1, String team2, Integer score1, Integer score2,
+                           Integer extraTimeScore1, Integer extraTimeScore2, Integer penaltyScore1,
+                           Integer penaltyScore2, Date gameTime, String stage, Boolean shouldOverride) {
         this.id = id;
         this.team1 = team1;
         this.team2 = team2;
@@ -106,15 +106,15 @@ public class GameDto {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GameDto gameDto = (GameDto) o;
-        return Objects.equals(id, gameDto.id) &&
-                Objects.equals(team1, gameDto.team1) &&
-                Objects.equals(team2, gameDto.team2) &&
-                Objects.equals(score1, gameDto.score1) &&
-                Objects.equals(score2, gameDto.score2) &&
-                Objects.equals(gameTime, gameDto.gameTime) &&
-                Objects.equals(stage, gameDto.stage) &&
-                Objects.equals(shouldOverride, gameDto.shouldOverride);
+        GameResponseDto gameResponseDto = (GameResponseDto) o;
+        return Objects.equals(id, gameResponseDto.id) &&
+                Objects.equals(team1, gameResponseDto.team1) &&
+                Objects.equals(team2, gameResponseDto.team2) &&
+                Objects.equals(score1, gameResponseDto.score1) &&
+                Objects.equals(score2, gameResponseDto.score2) &&
+                Objects.equals(gameTime, gameResponseDto.gameTime) &&
+                Objects.equals(stage, gameResponseDto.stage) &&
+                Objects.equals(shouldOverride, gameResponseDto.shouldOverride);
     }
 
     @Override

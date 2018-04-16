@@ -1,0 +1,29 @@
+spring:
+  jpa:
+    database: hsql
+    # Show or not log for each sql query
+    show-sql: true
+#    database-platform: org.hibernate.dialect.Oracle10gDialect
+    hibernate:
+      # Hibernate ddl auto (create, create-drop, update): with "update" the database
+      # schema will be automatically updated accordingly to java entities found in
+      # the project
+      ddl-auto: create
+      # Spring Boot however defaults this property to false, which means the old generator will be used,
+      # unless you explicitly tell it you want the new one. You need to set the property
+      # spring.jpa.hibernate.use-new-id-generator-mappings to true to get the TableGenerator.
+      use-new-id-generator-mappings: true
+    datasource:
+        # Spring JDBC has a DataSource initializer feature. Spring Boot enables it by default and loads SQL from the standard locations schema.sql and data.sql
+        initialize: false
+        schema: schema.sql
+        data: data.sql
+        generate-unique-name: true
+        platform: hsql
+        driver-class-name: org.hsqldb.jdbc.JDBCDriver
+  mvc:
+    favicon:
+      enabled: false
+
+server:
+  port: 6080
