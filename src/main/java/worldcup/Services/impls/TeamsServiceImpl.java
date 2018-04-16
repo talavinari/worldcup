@@ -3,6 +3,7 @@ package worldcup.Services.impls;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import worldcup.GameStage;
 import worldcup.Services.interfaces.GameService;
 import worldcup.Services.interfaces.TeamsService;
 import worldcup.api.dtos.TeamGamesBalance;
@@ -80,8 +81,8 @@ public class TeamsServiceImpl implements TeamsService
     @Override
     public Map<String, TeamGoalsBalance> calculateTeamGoalsBalance() {
         Map<String, TeamGoalsBalance> calcMap = new HashMap<>();
-        List<Game> finishedGames = gameService.getFinishedGames();
-        finishedGames.forEach(game -> {
+        List<Game> groupGames = gameService.getGamesByStage(GameStage.Group);
+        groupGames.forEach(game -> {
                     String team1 = game.getTeam1();
                     String team2 = game.getTeam2();
 

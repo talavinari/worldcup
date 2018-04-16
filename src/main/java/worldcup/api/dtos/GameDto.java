@@ -10,6 +10,10 @@ public class GameDto {
     private String team2;
     private Integer score1;
     private Integer score2;
+    private Integer extraTimeScore1;
+    private Integer extraTimeScore2;
+    private Integer penaltyScore1;
+    private Integer penaltyScore2;
     private Date gameTime;
     private String stage;
     private Boolean shouldOverride;
@@ -17,12 +21,18 @@ public class GameDto {
     public GameDto() {
     }
 
-    public GameDto(Long id, String team1, String team2, Integer score1, Integer score2, Date gameTime, String stage, Boolean shouldOverride) {
+    public GameDto(Long id, String team1, String team2, Integer score1, Integer score2,
+                   Integer extraTimeScore1, Integer extraTimeScore2, Integer penaltyScore1,
+                   Integer penaltyScore2, Date gameTime, String stage, Boolean shouldOverride) {
         this.id = id;
         this.team1 = team1;
         this.team2 = team2;
         this.score1 = score1;
         this.score2 = score2;
+        this.extraTimeScore1 = extraTimeScore1;
+        this.extraTimeScore2 = extraTimeScore2;
+        this.penaltyScore1 = penaltyScore1;
+        this.penaltyScore2 = penaltyScore2;
         this.gameTime = gameTime;
         this.stage = stage;
         this.shouldOverride = shouldOverride;

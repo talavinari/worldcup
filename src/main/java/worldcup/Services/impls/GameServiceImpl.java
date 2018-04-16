@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+import worldcup.GameStage;
 import worldcup.Services.interfaces.ConverterService;
 import worldcup.Services.interfaces.GameService;
 import worldcup.Services.interfaces.SoccerPlayersService;
@@ -38,7 +39,10 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public boolean isKnockOutStage() {
-        return getFinishedGames().size() >= GROUP_STAGE_GAME_COUNT;
+        return getGamesByStage(GameStage.Group).
+                stream().
+                filter(this::isGameFinished).
+                count() == GROUP_STAGE_GAME_COUNT;
     }
 
     @Override
@@ -61,7 +65,7 @@ public class GameServiceImpl implements GameService {
     @Override
     public Game findById(Long gameId) {
         Optional<Game> byId = gameRepository.findById(gameId);
-        if(byId.isPresent()) {
+        if (byId.isPresent()) {
             return byId.get();
         } else {
             throw new RuntimeException("Game with Id " + gameId + " doesn't exist");
@@ -82,30 +86,41 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public GamesResponseDto getAllGamesByGameTime() {
-        GamesResponseDto games = new GamesResponseDto();
+    public GamesResponseDto getAllGamesByGameTime(String gameStage) {
+        GamesResponseDto gamesDto = new GamesResponseDto();
         Date now = new Date();
 
-        getAllGames().forEach(game -> {
+        List<Game> gamesList;
+        if (gameStage != null) {
+            gamesList = getGamesByStage(GameStage.valueOf(gameStage));
+        } else {
+            gamesList = getAllGames();
+        }
+        gamesList.forEach(game -> {
             GameDto gameDto = converterService.covertGameToGameDto(game);
-            if(DateUtils.isToday(game.getGameTime())) {
-                games.getToday().add(gameDto);
-            } else if(DateUtils.isBeforeDay(game.getGameTime(), now)) {
-                games.getFinished().add(gameDto);
+            if (DateUtils.isToday(game.getGameTime())) {
+                gamesDto.getToday().add(gameDto);
+            } else if (DateUtils.isBeforeDay(game.getGameTime(), now)) {
+                gamesDto.getFinished().add(gameDto);
             } else {
-                games.getFuture().add(gameDto);
+                gamesDto.getFuture().add(gameDto);
             }
         });
-        return games;
+        return gamesDto;
+    }
+
+    @Override
+    public List<Game> getGamesByStage(GameStage gameStage) {
+        return Lists.newArrayList(gameRepository.findGamesByLevel(gameStage));
     }
 
     private void updateScorers(GameResultDto gameResult) {
         Map<String, SoccerPlayer> scorersMap = soccerPlayersService.getAllSoccerPlayersByName();
-        if(gameResult!=null) {
+        if (gameResult != null) {
             gameResult.getSoccerPlayers()
                     .stream()
                     .forEach(player -> {
-                        if(scorersMap.containsKey(player.getName())) {
+                        if (scorersMap.containsKey(player.getName())) {
                             scorersMap.get(player.getName()).addGoals(player.getNumberOfGoals());
                             soccerPlayersService.save(scorersMap.get(player.getName()));
                         } else {
@@ -125,21 +140,21 @@ public class GameServiceImpl implements GameService {
 
     private Game validateGameResult(GameResultDto gameResult) {
         Game game = findById(gameResult.getId());
-        if(gameResult.getScore1()==null || gameResult.getScore1()<0) {
+        if (gameResult.getScore1() == null || gameResult.getScore1() < 0) {
             throw new RuntimeException("Score 1 can't be negative nor NULL");
         }
-        if(gameResult.getScore2()== null || gameResult.getScore2()<0) {
+        if (gameResult.getScore2() == null || gameResult.getScore2() < 0) {
             throw new RuntimeException("Score 2 can't be negative nor NULL");
         }
 
-        if(gameResult!=null) {
+        if (gameResult != null) {
             gameResult.getSoccerPlayers()
                     .stream()
                     .forEach(player -> {
-                        if (player.getName()==null) {
+                        if (player.getName() == null) {
                             throw new RuntimeException("Player name can't be NULL");
                         }
-                        if (player.getNumberOfGoals()==null || player.getNumberOfGoals()<0) {
+                        if (player.getNumberOfGoals() == null || player.getNumberOfGoals() < 0) {
                             throw new RuntimeException("Player number of goals can't be negative nor NULL");
                         }
                     });

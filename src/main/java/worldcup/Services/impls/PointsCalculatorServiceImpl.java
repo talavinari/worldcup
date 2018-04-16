@@ -6,12 +6,10 @@ import org.springframework.stereotype.Service;
 import worldcup.Services.interfaces.*;
 import worldcup.api.dtos.TeamGamesBalance;
 import worldcup.api.dtos.TeamGoalsBalance;
+import worldcup.persistance.entities.SoccerPlayer;
 import worldcup.persistance.entities.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,13 +41,10 @@ public class PointsCalculatorServiceImpl implements PointsCalculatorService {
 
         Set<String> bestAttacks = Sets.newHashSet();
         Set<String> worstDefenses = Sets.newHashSet();
-        //TODO select from DB if all group stage finished - handle points for worst + best teams
         if (gameService.isKnockOutStage()) {
             Map<String, TeamGoalsBalance> TeamGoalsBalanceMap = teamsService.calculateTeamGoalsBalance();
-            bestAttacks = teamsService.getBestAttack(TeamGoalsBalanceMap)
-                    .stream().collect(Collectors.toSet());
-            worstDefenses = teamsService.getWorstDefense(TeamGoalsBalanceMap)
-                    .stream().collect(Collectors.toSet());
+            bestAttacks = new HashSet<>(teamsService.getBestAttack(TeamGoalsBalanceMap));
+            worstDefenses = new HashSet<>(teamsService.getWorstDefense(TeamGoalsBalanceMap));
         }
 
         Map<String, TeamGamesBalance> teamResults = teamsService.getTeamGamesBalance();
@@ -61,7 +56,8 @@ public class PointsCalculatorServiceImpl implements PointsCalculatorService {
             bestScorers =
                     soccerPlayersService.getBestScorer()
                             .stream()
-                            .map(x->x.getName()).collect(Collectors.toSet());
+                            .map(SoccerPlayer::getName).
+                            collect(Collectors.toSet());
         }
         updateUsersPoints(teamNameToPoints, bestAttacks, worstDefenses, bestScorers);
     }
@@ -73,6 +69,7 @@ public class PointsCalculatorServiceImpl implements PointsCalculatorService {
             map.put(entry.getKey(), calcPointsForBalance(entry.getValue()));
         }
 
+
         return map;
     }
 
@@ -82,6 +79,7 @@ public class PointsCalculatorServiceImpl implements PointsCalculatorService {
         points += value.getWinsAgaintBetterRankTeam() * POINTS_FOR_TEAM_WIN_AGAINST_BETTER_RANK_TEAM;
         points += value.getTies() * POINTS_FOR_TEAM_TIE;
         points += value.getLosesAgainstLowerRankTeam() * POINTS_FOR_TEAM_LOSS_AGAINST_LOWER_RANK_TEAM;
+        //TODO Add to team points all stages distinct so far.
         return points;
     }
 

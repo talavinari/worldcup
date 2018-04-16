@@ -1,9 +1,8 @@
 package worldcup.persistance.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import worldcup.GameStage;
+
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -24,9 +23,19 @@ public class Game {
     @Column(name = "game_time")
     private Date gameTime;
     @Column(name = "stage")
-    private String stage;
+    @Enumerated(EnumType.STRING)
+    private GameStage stage;
     @Column(name = "should_override")
     private Boolean shouldOverride;
+    @Column(name = "extra_time_score1")
+    private Integer extraTimeScore1;
+    @Column(name = "extra_time_score2")
+    private Integer extraTimeScore2;
+    @Column(name = "penalty_score1")
+    private Integer penaltyScore1;
+    @Column(name = "penalty_score2")
+    private Integer penaltyScore2;
+
 
     public Long getId() {
         return id;
@@ -76,11 +85,11 @@ public class Game {
         this.gameTime = gameTime;
     }
 
-    public String getStage() {
+    public GameStage getStage() {
         return stage;
     }
 
-    public void setStage(String stage) {
+    public void setStage(GameStage stage) {
         this.stage = stage;
     }
 
@@ -92,6 +101,38 @@ public class Game {
         this.shouldOverride = shouldOverride;
     }
 
+    public Integer getExtraTimeScore1() {
+        return extraTimeScore1;
+    }
+
+    public void setExtraTimeScore1(Integer extraTimeScore1) {
+        this.extraTimeScore1 = extraTimeScore1;
+    }
+
+    public Integer getExtraTimeScore2() {
+        return extraTimeScore2;
+    }
+
+    public void setExtraTimeScore2(Integer extraTimeScore2) {
+        this.extraTimeScore2 = extraTimeScore2;
+    }
+
+    public Integer getPenaltyScore1() {
+        return penaltyScore1;
+    }
+
+    public void setPenaltyScore1(Integer penaltyScore1) {
+        this.penaltyScore1 = penaltyScore1;
+    }
+
+    public Integer getPenaltyScore2() {
+        return penaltyScore2;
+    }
+
+    public void setPenaltyScore2(Integer penaltyScore2) {
+        this.penaltyScore2 = penaltyScore2;
+    }
+
     @Override
     public String toString() {
         return "Game{" +
@@ -101,8 +142,12 @@ public class Game {
                 ", score1=" + score1 +
                 ", score2=" + score2 +
                 ", gameTime=" + gameTime +
-                ", stage='" + stage + '\'' +
+                ", stage=" + stage +
                 ", shouldOverride=" + shouldOverride +
+                ", extraTimeScore1=" + extraTimeScore1 +
+                ", extraTimeScore2=" + extraTimeScore2 +
+                ", penaltyScore1=" + penaltyScore1 +
+                ", penaltyScore2=" + penaltyScore2 +
                 '}';
     }
 }

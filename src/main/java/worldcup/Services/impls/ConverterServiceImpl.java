@@ -55,8 +55,12 @@ public class ConverterServiceImpl implements ConverterService {
                 game.getTeam2(),
                 game.getScore1(),
                 game.getScore2(),
+                game.getExtraTimeScore1(),
+                game.getExtraTimeScore2(),
+                game.getPenaltyScore1(),
+                game.getPenaltyScore2(),
                 game.getGameTime(),
-                game.getStage(),
+                game.getStage().name(),
                 game.getShouldOverride()
         );
     }

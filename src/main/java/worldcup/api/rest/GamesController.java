@@ -28,8 +28,8 @@ public class GamesController {
 
     @RequestMapping(method = RequestMethod.GET, path = "")
     @ResponseBody
-    public ResponseEntity<?> getAllGamesByGameTime() {
-        GamesResponseDto allGamesByGameTime = gameService.getAllGamesByGameTime();
+    public ResponseEntity<?> getAllGamesByGameTime(@RequestParam(name = "stage", required = false) String stage) {
+        GamesResponseDto allGamesByGameTime = gameService.getAllGamesByGameTime(stage);
         return new ResponseEntity<>(allGamesByGameTime, HttpStatus.OK);
     }
 
@@ -47,4 +47,5 @@ public class GamesController {
         pointsCalculatorService.calculateUsersPoint();
         return new ResponseEntity<>(converterService.covertGameToGameDto(game), HttpStatus.OK);
     }
+
 }
