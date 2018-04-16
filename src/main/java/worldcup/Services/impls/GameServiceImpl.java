@@ -3,23 +3,22 @@ package worldcup.Services.impls;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 import worldcup.GameStage;
 import worldcup.Services.interfaces.ConverterService;
 import worldcup.Services.interfaces.GameService;
 import worldcup.Services.interfaces.SoccerPlayersService;
+import worldcup.Services.interfaces.TeamsService;
 import worldcup.api.dtos.GameDto;
+import worldcup.api.dtos.GameMetadataDto;
 import worldcup.api.dtos.GameResultDto;
 import worldcup.api.dtos.GamesResponseDto;
 import worldcup.persistance.entities.Game;
 import worldcup.persistance.entities.SoccerPlayer;
+import worldcup.persistance.entities.Team;
 import worldcup.persistance.repository.GameRepository;
 import worldcup.utils.DateUtils;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,6 +35,9 @@ public class GameServiceImpl implements GameService {
 
     @Autowired
     private ConverterService converterService;
+
+    @Autowired
+    private TeamsService teamsService;
 
     @Override
     public boolean isKnockOutStage() {
@@ -114,6 +116,41 @@ public class GameServiceImpl implements GameService {
         return Lists.newArrayList(gameRepository.findGamesByLevel(gameStage));
     }
 
+    @Override
+    public Game updateGameMetadata(GameMetadataDto gameMetadataDto, Long gameId) {
+        Game game = findById(gameId);
+        validateForDataUpdate(gameMetadataDto, game);
+        updateGameMetadataEntity(gameMetadataDto,game);
+        return game;
+    }
+
+    private void updateGameMetadataEntity(GameMetadataDto gameMetadataDto, Game game) {
+        game.setTeam1(gameMetadataDto.getTeam1());
+        game.setTeam2(gameMetadataDto.getTeam2());
+        save(game);
+    }
+
+    private void validateForDataUpdate(GameMetadataDto gameMetadataDto, Game game) {
+        ArrayList<Team> allTeams = teamsService.getAllTeams();
+        if (!allTeams.contains(new Team(gameMetadataDto.getTeam1()))){
+            throw new RuntimeException("Team1 is invalid team");
+        }
+
+        if (!allTeams.contains(new Team(gameMetadataDto.getTeam2()))){
+            throw new RuntimeException("Team2 is invalid team");
+        }
+
+        if (gameMetadataDto.getTeam2().equals(gameMetadataDto.getTeam1())){
+            throw new RuntimeException("Team 1 & 2 should be different");
+        }
+
+        if (!game.getShouldOverride()){
+            throw new RuntimeException("Game with id " + game.getId() + " is not updatable");
+        }
+    }
+
+
+
     private void updateScorers(GameResultDto gameResult) {
         Map<String, SoccerPlayer> scorersMap = soccerPlayersService.getAllSoccerPlayersByName();
         if (gameResult != null) {
@@ -132,20 +169,70 @@ public class GameServiceImpl implements GameService {
         }
     }
 
-    private void updateGameResult(@RequestBody GameResultDto gameResult, Game game) {
+    private void updateGameResult(GameResultDto gameResult, Game game) {
         game.setScore1(gameResult.getScore1());
         game.setScore2(gameResult.getScore2());
+        if (gameResult.getExtraTimeScore1() != null){
+            game.setExtraTimeScore1(gameResult.getExtraTimeScore1());
+            game.setExtraTimeScore2(gameResult.getExtraTimeScore2());
+        }
+
+        if (gameResult.getPenaltyScore1() != null){
+            game.setPenaltyScore1(gameResult.getPenaltyScore1());
+            game.setPenaltyScore2(gameResult.getPenaltyScore2());
+        }
+
         save(game);
     }
 
     private Game validateGameResult(GameResultDto gameResult) {
         Game game = findById(gameResult.getId());
+        validateForResultUpdate(gameResult);
+
+        return game;
+    }
+
+
+    private void validateForResultUpdate(GameResultDto gameResult) {
         if (gameResult.getScore1() == null || gameResult.getScore1() < 0) {
             throw new RuntimeException("Score 1 can't be negative nor NULL");
         }
         if (gameResult.getScore2() == null || gameResult.getScore2() < 0) {
             throw new RuntimeException("Score 2 can't be negative nor NULL");
         }
+
+        if (gameResult.getExtraTimeScore1() != null && gameResult.getExtraTimeScore1() < 0){
+            throw new RuntimeException("Score 1 of extra time can't be NULL");
+        }
+
+        if (gameResult.getExtraTimeScore2() != null && gameResult.getExtraTimeScore2() < 0){
+            throw new RuntimeException("Score 2 of extra time can't be NULL");
+        }
+
+        if (gameResult.getPenaltyScore1() != null && gameResult.getPenaltyScore1() < 0){
+            throw new RuntimeException("Score 1 of penalty kicks can't be NULL");
+        }
+
+        if (gameResult.getPenaltyScore2() != null && gameResult.getPenaltyScore2() < 0){
+            throw new RuntimeException("Score 2 of penalty kicks can't be NULL");
+        }
+
+        if (gameResult.getExtraTimeScore1() != null && gameResult.getExtraTimeScore2() == null) {
+            throw new RuntimeException("Score 2 of extra time must be provided if Score1 of extra time provided");
+        }
+
+        if (gameResult.getExtraTimeScore2() != null && gameResult.getExtraTimeScore1() == null) {
+            throw new RuntimeException("Score 1 of extra time must be provided if Score2 provided");
+        }
+
+        if (gameResult.getPenaltyScore1() != null && gameResult.getPenaltyScore2() == null) {
+            throw new RuntimeException("Score2 of penalty kick must be provided if Score1 of penalty provided");
+        }
+
+        if (gameResult.getPenaltyScore2() != null && gameResult.getPenaltyScore1() == null) {
+            throw new RuntimeException("Score1 of penalty kick must be provided if Score2 of penalty provided");
+        }
+
 
         if (gameResult != null) {
             gameResult.getSoccerPlayers()
@@ -159,8 +246,6 @@ public class GameServiceImpl implements GameService {
                         }
                     });
         }
-
-        return game;
     }
 
     private boolean isGameFinished(Game game) {

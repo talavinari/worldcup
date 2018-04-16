@@ -9,18 +9,13 @@ public class GameResultDto {
     private String team2;
     private Integer score1;
     private Integer score2;
+    private Integer extraTimeScore1;
+    private Integer extraTimeScore2;
+    private Integer penaltyScore1;
+    private Integer penaltyScore2;
     private List<ScorerDto> soccerPlayers;
 
     public GameResultDto() {
-    }
-
-    public GameResultDto(Long id, String team1, String team2, Integer score1, Integer score2, List<ScorerDto> soccerPlayers) {
-        this.id = id;
-        this.team1 = team1;
-        this.team2 = team2;
-        this.score1 = score1;
-        this.score2 = score2;
-        this.soccerPlayers = soccerPlayers;
     }
 
     public Long getId() {
@@ -79,7 +74,43 @@ public class GameResultDto {
                 ", team2='" + team2 + '\'' +
                 ", score1=" + score1 +
                 ", score2=" + score2 +
+                ", extraTimeScore1=" + extraTimeScore1 +
+                ", extraTimeScore2=" + extraTimeScore2 +
+                ", penaltyScore1=" + penaltyScore1 +
+                ", penaltyScore2=" + penaltyScore2 +
                 ", soccerPlayers=" + soccerPlayers +
                 '}';
+    }
+
+    public Integer getExtraTimeScore1() {
+        return extraTimeScore1;
+    }
+
+    public void setExtraTimeScore1(Integer extraTimeScore1) {
+        this.extraTimeScore1 = extraTimeScore1;
+    }
+
+    public Integer getExtraTimeScore2() {
+        return extraTimeScore2;
+    }
+
+    public void setExtraTimeScore2(Integer extraTimeScore2) {
+        this.extraTimeScore2 = extraTimeScore2;
+    }
+
+    public Integer getPenaltyScore1() {
+        return penaltyScore1;
+    }
+
+    public void setPenaltyScore1(Integer penaltyScore1) {
+        this.penaltyScore1 = penaltyScore1;
+    }
+
+    public Integer getPenaltyScore2() {
+        return penaltyScore2;
+    }
+
+    public void setPenaltyScore2(Integer penaltyScore2) {
+        this.penaltyScore2 = penaltyScore2;
     }
 }

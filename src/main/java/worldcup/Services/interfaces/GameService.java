@@ -1,6 +1,7 @@
 package worldcup.Services.interfaces;
 
 import worldcup.GameStage;
+import worldcup.api.dtos.GameMetadataDto;
 import worldcup.api.dtos.GameResultDto;
 import worldcup.api.dtos.GamesResponseDto;
 import worldcup.persistance.entities.Game;
@@ -25,4 +26,6 @@ public interface GameService {
     GamesResponseDto getAllGamesByGameTime(String gameStage);
 
     List<Game> getGamesByStage(GameStage gameStage);
+
+    Game updateGameMetadata(GameMetadataDto gameMetadataDto, Long gameId);
 }

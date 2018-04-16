@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import worldcup.Services.interfaces.ConverterService;
 import worldcup.Services.interfaces.GameService;
 import worldcup.Services.interfaces.PointsCalculatorService;
+import worldcup.api.dtos.GameMetadataDto;
 import worldcup.api.dtos.GameResultDto;
 import worldcup.api.dtos.GamesResponseDto;
 import worldcup.persistance.entities.Game;
@@ -48,4 +49,13 @@ public class GamesController {
         return new ResponseEntity<>(converterService.covertGameToGameDto(game), HttpStatus.OK);
     }
 
+
+    @RequestMapping(method = RequestMethod.POST, path = "/{gameId}/metadata")
+    @ResponseBody
+    @Transactional
+    public ResponseEntity<?> updateGameMetadata(@PathVariable Long gameId,
+                                                    @RequestBody GameMetadataDto gameMetadataDto){
+        Game game = gameService.updateGameMetadata(gameMetadataDto, gameId);
+        return new ResponseEntity<>(converterService.covertGameToGameDto(game), HttpStatus.OK);
+    }
 }
