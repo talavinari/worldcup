@@ -1,6 +1,6 @@
 package worldcup.persistance.entities;
 
-import worldcup.GameStage;
+import worldcup.api.enums.GameStage;
 
 import javax.persistence.*;
 import java.util.Date;
