@@ -1,7 +1,6 @@
 package worldcup.Services.impls;
 
 import com.google.common.collect.Lists;
-import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import worldcup.GameStage;
@@ -112,6 +111,23 @@ public class GameServiceImpl implements GameService {
     @Override
     public List<Game> getGamesByStage(GameStage gameStage) {
         return Lists.newArrayList(gameRepository.findGamesByLevel(gameStage));
+    }
+
+    @Override
+    public Map<GameStage, List<String>> getTeamsByStages() {
+        Map<GameStage, List<String>> map = new HashMap<>();
+        Arrays.asList(GameStage.values())
+                .forEach(stage->map.put(stage, new ArrayList<>()));
+
+        map.entrySet()
+                .forEach(entry-> {
+                    getGamesByStage(entry.getKey())
+                            .forEach(game -> {
+                                entry.getValue().add(game.getTeam1());
+                                entry.getValue().add(game.getTeam2());
+                            });
+                });
+        return map;
     }
 
     @Override

@@ -8,6 +8,7 @@ import worldcup.api.dtos.NewGameDto;
 import worldcup.persistance.entities.Game;
 
 import java.util.List;
+import java.util.Map;
 
 public interface GameService {
     boolean isKnockOutStage();
@@ -27,6 +28,8 @@ public interface GameService {
     GamesResponseDto getAllGamesByGameTime(String gameStage);
 
     List<Game> getGamesByStage(GameStage gameStage);
+
+    Map<GameStage, List<String>> getTeamsByStages();
 
     Game updateGameMetadata(GameMetadataDto gameMetadataDto, Long gameId);
 
