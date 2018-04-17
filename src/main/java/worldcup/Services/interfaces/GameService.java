@@ -1,10 +1,10 @@
 package worldcup.Services.interfaces;
 
+import worldcup.Services.enums.GameStage;
 import worldcup.api.dtos.GameMetadataDto;
 import worldcup.api.dtos.GameResultDto;
 import worldcup.api.dtos.GamesResponseDto;
 import worldcup.api.dtos.NewGameDto;
-import worldcup.api.enums.GameStage;
 import worldcup.persistance.entities.Game;
 
 import java.util.List;

@@ -2,7 +2,7 @@ package worldcup.persistance.repository;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import worldcup.api.enums.GameStage;
+import worldcup.Services.enums.GameStage;
 import worldcup.persistance.entities.Game;
 
 import java.util.Set;

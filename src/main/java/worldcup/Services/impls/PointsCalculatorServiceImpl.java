@@ -3,10 +3,10 @@ package worldcup.Services.impls;
 import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import worldcup.Services.enums.GameStage;
 import worldcup.Services.interfaces.*;
 import worldcup.api.dtos.TeamGamesBalance;
 import worldcup.api.dtos.TeamGoalsBalance;
-import worldcup.api.enums.GameStage;
 import worldcup.persistance.entities.SoccerPlayer;
 import worldcup.persistance.entities.User;
 

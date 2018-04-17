@@ -1,4 +1,4 @@
-package worldcup.api.enums;
+package worldcup.Services.enums;
 
 public enum GameStage {
     Group,
