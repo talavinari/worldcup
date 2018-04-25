@@ -21,7 +21,7 @@ public class Game {
     private Integer score1;
     @Column(name = "score2")
     private Integer score2;
-    @Column(name = "game_time")
+    @Column(name = "game_time", columnDefinition="DATETIME")
     private Date gameTime;
     @Column(name = "stage")
     @Enumerated(EnumType.STRING)

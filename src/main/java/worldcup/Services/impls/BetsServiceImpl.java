@@ -102,5 +102,16 @@ public class BetsServiceImpl implements BetsService {
         if(StringUtils.isEmpty(bet.getEmail())) {
             throw new RuntimeException("User's Email is missing");
         }
+        if(StringUtils.isEmpty(bet.getGroupId())) {
+            throw new RuntimeException("Group id is missing");
+        }
+
+        try {
+            Long.parseLong(bet.getGroupId());
+        }
+        catch (Exception e){
+            throw new RuntimeException("Invalid group id number");
+        }
+
     }
 }

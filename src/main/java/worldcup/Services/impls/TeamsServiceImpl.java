@@ -51,6 +51,7 @@ public class TeamsServiceImpl implements TeamsService
         Map<String, TeamGamesBalance> teamBalanceMap = new HashMap<>();
 
         Map<String, String> teamsToRank = getTeamsToRank();
+
         for (Game game : gameService.getFinishedGames()) {
             Integer team1Rank = Integer.valueOf(teamsToRank.get(game.getTeam1()));
             Integer team2Rank = Integer.valueOf(teamsToRank.get(game.getTeam2()));
@@ -64,14 +65,18 @@ public class TeamsServiceImpl implements TeamsService
                 teamBalanceMap.get(game.getTeam2()).incrementTotalLoses();
                 if (team1Rank > team2Rank) {
                     teamBalanceMap.get(game.getTeam1()).incrementWinsAgainstBetterRankTeam();
-                    teamBalanceMap.get(game.getTeam2()).incrementLosesAgainstLowerRankTeam();
+                    if (game.getStage().equals(GameStage.Group)) {
+                        teamBalanceMap.get(game.getTeam2()).incrementLosesAgainstLowerRankTeam();
+                    }
                 }
             } else {
                 teamBalanceMap.get(game.getTeam2()).incrementTotalWin();
                 teamBalanceMap.get(game.getTeam1()).incrementTotalLoses();
                 if (team2Rank > team1Rank) {
                     teamBalanceMap.get(game.getTeam2()).incrementWinsAgainstBetterRankTeam();
-                    teamBalanceMap.get(game.getTeam1()).incrementLosesAgainstLowerRankTeam();
+                    if (game.getStage().equals(GameStage.Group)) {
+                        teamBalanceMap.get(game.getTeam1()).incrementLosesAgainstLowerRankTeam();
+                    }
                 }
             }
         }

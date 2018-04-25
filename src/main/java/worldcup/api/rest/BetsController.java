@@ -17,6 +17,7 @@ import worldcup.persistance.entities.Group;
 import worldcup.persistance.entities.User;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,19 +46,24 @@ public class BetsController {
     public ResponseEntity<?> getAllBets() {
         ArrayList<Bet> bets = betsService.getAllBets();
         List<BetDtoResponse> betDtos = bets.stream().map
-                (x -> converterService.covertBetToBetDtoResponse(x)).collect(Collectors.toList());
+                (x -> converterService.covertBetToBetDtoResponse(x)).
+                sorted(Comparator.comparing(BetDtoResponse::getPoints).reversed()).
+                collect(Collectors.toList());
         return new ResponseEntity<>(betDtos, HttpStatus.OK);
     }
 
-    @RequestMapping(path = "/", method = RequestMethod.POST)
+    @RequestMapping(path = "", method = RequestMethod.POST)
     public ResponseEntity<?> createNewBet(@RequestBody BetDto betRequest) {
         logger.info("New Bet Request arrived: {}", betRequest);
 
         betsService.validateBet(betRequest);
 
-        Optional<Group> first = groupService.findAll().stream().filter(x -> x.getId().equals(betRequest.getGroupId())).findFirst();
+        Optional<Group> first = groupService.findAll().stream().filter(x -> x.getId().equals(Long.valueOf(betRequest.getGroupId()))).findFirst();
+        if (!first.isPresent()) {
+            throw new RuntimeException("Invalid group id " + betRequest.getGroupId());
+        }
 
-        User newUser = new User(betRequest.getName(), betRequest.getEmail(), 0 , first.get() , null);
+        User newUser = new User(betRequest.getName(), betRequest.getEmail(), 0, first.get(), null);
         usersService.save(newUser);
         Bet bet = converterService.covertBetDtoToBet(betRequest, newUser);
         betsService.save(bet);

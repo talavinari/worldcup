@@ -52,7 +52,7 @@ public class SoccerPlayersServiceImpl implements SoccerPlayersService {
 
     @Override
     public List<SoccerPlayer> getAllSoccerPlayersSortedByGoals() {
-        return Lists.newArrayList(soccerPlayerRepository.findAll())
+        return getAllSoccerPlayers()
                 .stream()
                 .sorted(Comparator.comparing(SoccerPlayer::getNumberOfGoals).reversed())
                 .collect(Collectors.toList());
@@ -68,5 +68,10 @@ public class SoccerPlayersServiceImpl implements SoccerPlayersService {
                     .add(new SoccerPlayerStatDto(x.getName(), x.getNumberOfGoals()));
         });
         return soccerPlayersStatsDto;
+    }
+
+    @Override
+    public List<SoccerPlayer> getAllSoccerPlayers() {
+        return Lists.newArrayList(soccerPlayerRepository.findAll());
     }
 }

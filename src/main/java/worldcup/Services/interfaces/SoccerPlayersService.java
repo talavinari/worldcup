@@ -14,4 +14,6 @@ public interface SoccerPlayersService {
     List<SoccerPlayer> getAllSoccerPlayersSortedByGoals();
 
     SoccerPlayersStatsDto getSoccerPlayersStats();
+
+    List<SoccerPlayer> getAllSoccerPlayers();
 }

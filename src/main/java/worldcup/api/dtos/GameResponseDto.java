@@ -1,6 +1,5 @@
 package worldcup.api.dtos;
 
-import java.util.Date;
 import java.util.Objects;
 
 public class GameResponseDto {
@@ -14,7 +13,8 @@ public class GameResponseDto {
     private Integer extraTimeScore2;
     private Integer penaltyScore1;
     private Integer penaltyScore2;
-    private Date gameTime;
+    private String date;
+    private String gameTime;
     private String stage;
     private Boolean shouldOverride;
 
@@ -23,7 +23,7 @@ public class GameResponseDto {
 
     public GameResponseDto(Long id, String team1, String team2, Integer score1, Integer score2,
                            Integer extraTimeScore1, Integer extraTimeScore2, Integer penaltyScore1,
-                           Integer penaltyScore2, Date gameTime, String stage, Boolean shouldOverride) {
+                           Integer penaltyScore2, String gameTime, String stage, Boolean shouldOverride) {
         this.id = id;
         this.team1 = team1;
         this.team2 = team2;
@@ -78,11 +78,11 @@ public class GameResponseDto {
         this.score2 = score2;
     }
 
-    public Date getGameTime() {
+    public String getGameTime() {
         return gameTime;
     }
 
-    public void setGameTime(Date gameTime) {
+    public void setGameTime(String gameTime) {
         this.gameTime = gameTime;
     }
 

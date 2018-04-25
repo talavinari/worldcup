@@ -11,7 +11,7 @@ public class BetDto {
     private String worstDefence;
     private String name;
     private String email;
-    private Long groupId;
+    private String groupId;
 
     public BetDto() {
     }
@@ -90,10 +90,6 @@ public class BetDto {
         return email;
     }
 
-    public Long getGroupId() {
-        return groupId;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -102,7 +98,11 @@ public class BetDto {
         this.email = email;
     }
 
-    public void setGroupId(Long groupId) {
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
 
@@ -116,6 +116,9 @@ public class BetDto {
                 ", bestScorer='" + bestScorer + '\'' +
                 ", bestAttack='" + bestAttack + '\'' +
                 ", worstDefence='" + worstDefence + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", groupId='" + groupId + '\'' +
                 '}';
     }
 }

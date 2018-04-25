@@ -1,6 +1,5 @@
 package worldcup.api.rest;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,7 +7,10 @@ import org.springframework.web.bind.annotation.*;
 import worldcup.Services.interfaces.ConverterService;
 import worldcup.Services.interfaces.GameService;
 import worldcup.Services.interfaces.PointsCalculatorService;
-import worldcup.api.dtos.*;
+import worldcup.api.dtos.GameMetadataDto;
+import worldcup.api.dtos.GameResultDto;
+import worldcup.api.dtos.GamesResponseDto;
+import worldcup.api.dtos.NewGameDto;
 import worldcup.persistance.entities.Game;
 
 import javax.transaction.Transactional;

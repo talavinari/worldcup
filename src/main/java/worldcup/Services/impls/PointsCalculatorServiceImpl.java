@@ -53,7 +53,6 @@ public class PointsCalculatorServiceImpl implements PointsCalculatorService {
 
         Map<GameStage, List<String>> teamsByStages = gameService.getTeamsByStages();
 
-        //TODO if tournament finished add points for scorer. - calculate list of best
         Set<String> bestScorers = Sets.newHashSet();
         if (gameService.isTournamentFinished()) {
             bestScorers =
@@ -82,7 +81,6 @@ public class PointsCalculatorServiceImpl implements PointsCalculatorService {
         points += value.getWinsAgaintBetterRankTeam() * POINTS_FOR_TEAM_WIN_AGAINST_BETTER_RANK_TEAM;
         points += value.getTies() * POINTS_FOR_TEAM_TIE;
         points += value.getLosesAgainstLowerRankTeam() * POINTS_FOR_TEAM_LOSS_AGAINST_LOWER_RANK_TEAM;
-        //TODO Add to team points all stages distinct so far.
         return points;
     }
 

@@ -5,11 +5,16 @@ import worldcup.Services.interfaces.ConverterService;
 import worldcup.api.dtos.*;
 import worldcup.persistance.entities.*;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ConverterServiceImpl implements ConverterService {
+
+    private static final String DATE_FORMAT_FOR_UI = "dd/MM HH:mm";
 
     @Override
     public TeamDto convertTeamToTeamDto(Team team) {
@@ -49,6 +54,9 @@ public class ConverterServiceImpl implements ConverterService {
 
     @Override
     public GameResponseDto covertGameToGameDto(Game game) {
+        Calendar instance = Calendar.getInstance();
+        instance.setTime(game.getGameTime());
+        String dateFormat = new SimpleDateFormat(DATE_FORMAT_FOR_UI).format(instance.getTime());
         return new GameResponseDto(
                 game.getId(),
                 game.getTeam1(),
@@ -59,7 +67,7 @@ public class ConverterServiceImpl implements ConverterService {
                 game.getExtraTimeScore2(),
                 game.getPenaltyScore1(),
                 game.getPenaltyScore2(),
-                game.getGameTime(),
+                dateFormat,
                 game.getStage().name(),
                 game.getShouldOverride()
         );
@@ -96,5 +104,12 @@ public class ConverterServiceImpl implements ConverterService {
         List<UserDto> userDtos = new ArrayList<>();
         users.forEach(x-> userDtos.add(covertUserToUserDto(x)));
         return userDtos;
+    }
+
+    @Override
+    public List<ResponsePlayerDto> convertPlayersToPlayerString(List<SoccerPlayer> soccerPlayers) {
+        return soccerPlayers.stream().
+                map(x->new ResponsePlayerDto(x.getId().toString(), x.getName(), x.getNumberOfGoals().toString())).
+                collect(Collectors.toList());
     }
 }

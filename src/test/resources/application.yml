@@ -15,7 +15,7 @@ spring:
       use-new-id-generator-mappings: true
     datasource:
         # Spring JDBC has a DataSource initializer feature. Spring Boot enables it by default and loads SQL from the standard locations schema.sql and data.sql
-        initialize: false
+        initialize: true
         schema: schema.sql
         data: data.sql
         generate-unique-name: true

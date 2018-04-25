@@ -19,4 +19,7 @@ public interface ConverterService {
 
     UserDto covertUserToUserDto(User user);
     List<UserDto> covertUsersToUserDtos(List<User> users);
+
+
+    List<ResponsePlayerDto> convertPlayersToPlayerString(List<SoccerPlayer> soccerPlayers);
 }
