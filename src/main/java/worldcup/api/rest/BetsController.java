@@ -44,6 +44,7 @@ public class BetsController {
     @RequestMapping(method = RequestMethod.GET, path = "")
     @ResponseBody
     public ResponseEntity<?> getAllBets() {
+
         ArrayList<Bet> bets = betsService.getAllBets();
         List<BetDtoResponse> betDtos = bets.stream().map
                 (x -> converterService.covertBetToBetDtoResponse(x)).

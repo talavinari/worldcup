@@ -34,4 +34,6 @@ public interface GameService {
     Game updateGameMetadata(GameMetadataDto gameMetadataDto, Long gameId);
 
     Game createGame(NewGameDto newGameDto);
+
+    boolean isGameFinished(Game game);
 }

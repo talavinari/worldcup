@@ -274,7 +274,8 @@ public class GameServiceImpl implements GameService {
         }
     }
 
-    private boolean isGameFinished(Game game) {
+    @Override
+    public boolean isGameFinished(Game game) {
         return game.getScore1() != null && game.getScore2() != null;
     }
 }
