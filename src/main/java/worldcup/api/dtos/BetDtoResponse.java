@@ -6,6 +6,10 @@ public class BetDtoResponse {
     private String rankB;
     private String rankC;
     private String rankD;
+    private Integer rankAPoints;
+    private Integer rankBPoints;
+    private Integer rankCPoints;
+    private Integer rankDPoints;
     private String bestScorer;
     private String bestAttack;
     private String worstDefence;
@@ -14,11 +18,29 @@ public class BetDtoResponse {
     private Integer points;
     private String group;
 
-    public BetDtoResponse(String rankA, String rankB, String rankC, String rankD, String bestScorer, String bestAttack, String worstDefence, String name, String email, Integer points, String group) {
+    public BetDtoResponse(String rankA,
+                          int rankAPoints,
+                          String rankB,
+                          int rankBPoints,
+                          String rankC,
+                          int rankCPoints,
+                          String rankD,
+                          int rankDPoints,
+                          String bestScorer,
+                          String bestAttack,
+                          String worstDefence,
+                          String name,
+                          String email,
+                          Integer points,
+                          String group) {
         this.rankA = rankA;
+        this.rankAPoints = rankAPoints;
         this.rankB = rankB;
+        this.rankBPoints = rankBPoints;
         this.rankC = rankC;
+        this.rankCPoints = rankCPoints;
         this.rankD = rankD;
+        this.rankDPoints = rankDPoints;
         this.bestScorer = bestScorer;
         this.bestAttack = bestAttack;
         this.worstDefence = worstDefence;
@@ -26,6 +48,7 @@ public class BetDtoResponse {
         this.email = email;
         this.points = points;
         this.group = group;
+
     }
 
     public String getRankA() {
@@ -114,5 +137,37 @@ public class BetDtoResponse {
 
     public void setGroup(String group) {
         this.group = group;
+    }
+
+    public Integer getRankAPoints() {
+        return rankAPoints;
+    }
+
+    public void setRankAPoints(Integer rankAPoints) {
+        this.rankAPoints = rankAPoints;
+    }
+
+    public Integer getRankBPoints() {
+        return rankBPoints;
+    }
+
+    public void setRankBPoints(Integer rankBPoints) {
+        this.rankBPoints = rankBPoints;
+    }
+
+    public Integer getRankCPoints() {
+        return rankCPoints;
+    }
+
+    public void setRankCPoints(Integer rankCPoints) {
+        this.rankCPoints = rankCPoints;
+    }
+
+    public Integer getRankDPoints() {
+        return rankDPoints;
+    }
+
+    public void setRankDPoints(Integer rankDPoints) {
+        this.rankDPoints = rankDPoints;
     }
 }

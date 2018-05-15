@@ -6,20 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import worldcup.Services.interfaces.BetsService;
-import worldcup.Services.interfaces.ConverterService;
-import worldcup.Services.interfaces.GroupService;
-import worldcup.Services.interfaces.UsersService;
+import worldcup.Services.interfaces.*;
 import worldcup.api.dtos.BetDto;
 import worldcup.api.dtos.BetDtoResponse;
 import worldcup.persistance.entities.Bet;
 import worldcup.persistance.entities.Group;
 import worldcup.persistance.entities.User;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -41,13 +35,17 @@ public class BetsController {
     @Autowired
     private ConverterService converterService;
 
+    @Autowired
+    private PointsCalculatorService pointsCalculatorService;
+
     @RequestMapping(method = RequestMethod.GET, path = "")
     @ResponseBody
     public ResponseEntity<?> getAllBets() {
-
+        Map<String, Integer> teamToPointsMap = pointsCalculatorService.getTeamToPointsMap();
         ArrayList<Bet> bets = betsService.getAllBets();
+
         List<BetDtoResponse> betDtos = bets.stream().map
-                (x -> converterService.covertBetToBetDtoResponse(x)).
+                (x -> converterService.covertBetToBetDtoResponse(x, teamToPointsMap)).
                 sorted(Comparator.comparing(BetDtoResponse::getPoints).reversed()).
                 collect(Collectors.toList());
         return new ResponseEntity<>(betDtos, HttpStatus.OK);

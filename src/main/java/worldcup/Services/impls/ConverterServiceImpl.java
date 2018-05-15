@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,7 +29,7 @@ public class ConverterServiceImpl implements ConverterService {
     @Override
     public List<TeamDto> convertTeamsToTeamsDto(List<Team> teams) {
         List<TeamDto> teamDtos = new ArrayList<>();
-        teams.forEach(x-> teamDtos.add(convertTeamToTeamDto(x)));
+        teams.forEach(x -> teamDtos.add(convertTeamToTeamDto(x)));
         return teamDtos;
     }
 
@@ -45,9 +46,18 @@ public class ConverterServiceImpl implements ConverterService {
     }
 
     @Override
-    public BetDtoResponse covertBetToBetDtoResponse(Bet x) {
+    public BetDtoResponse covertBetToBetDtoResponse(Bet x, Map<String, Integer> teamToPointsMap) {
+
         return new BetDtoResponse
-                (x.getRankA(), x.getRankB(), x.getRankC(), x.getRankD(), x.getBestScorer(),
+                (x.getRankA(),
+                        teamToPointsMap.get(x.getRankA()),
+                        x.getRankB(),
+                        teamToPointsMap.get(x.getRankB()),
+                        x.getRankC(),
+                        teamToPointsMap.get(x.getRankC()),
+                        x.getRankD(),
+                        teamToPointsMap.get(x.getRankD()),
+                        x.getBestScorer(),
                         x.getBestAttack(), x.getWorstDefence(), x.getUser().getName(),
                         x.getUser().getEmail(), x.getUser().getPoints(), x.getUser().getGroup().getName());
     }
@@ -84,7 +94,7 @@ public class ConverterServiceImpl implements ConverterService {
     @Override
     public List<GroupDto> covertGroupsToGroupDtos(List<Group> groups) {
         List<GroupDto> groupDtos = new ArrayList<>();
-        groups.forEach(x-> groupDtos.add(covertGroupToGroupDto(x)));
+        groups.forEach(x -> groupDtos.add(covertGroupToGroupDto(x)));
         return groupDtos;
     }
 
@@ -102,14 +112,14 @@ public class ConverterServiceImpl implements ConverterService {
     @Override
     public List<UserDto> covertUsersToUserDtos(List<User> users) {
         List<UserDto> userDtos = new ArrayList<>();
-        users.forEach(x-> userDtos.add(covertUserToUserDto(x)));
+        users.forEach(x -> userDtos.add(covertUserToUserDto(x)));
         return userDtos;
     }
 
     @Override
     public List<ResponsePlayerDto> convertPlayersToPlayerString(List<SoccerPlayer> soccerPlayers) {
         return soccerPlayers.stream().
-                map(x->new ResponsePlayerDto(x.getId().toString(), x.getName(), x.getNumberOfGoals().toString())).
+                map(x -> new ResponsePlayerDto(x.getId().toString(), x.getName(), x.getNumberOfGoals().toString())).
                 collect(Collectors.toList());
     }
 }

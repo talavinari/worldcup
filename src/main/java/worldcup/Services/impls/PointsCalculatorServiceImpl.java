@@ -50,9 +50,6 @@ public class PointsCalculatorServiceImpl implements PointsCalculatorService {
             worstDefenses = new HashSet<>(teamsService.getWorstDefense(TeamGoalsBalanceMap));
         }
 
-        Map<String, TeamGamesBalance> teamResults = teamsService.getTeamGamesBalance();
-        Map<String, Integer> teamNameToPoints = calculateTeamPoints(teamResults);
-
         Map<GameStage, List<String>> teamsByStages = gameService.getTeamsByStages();
 
         Set<String> bestScorers = Sets.newHashSet();
@@ -63,16 +60,20 @@ public class PointsCalculatorServiceImpl implements PointsCalculatorService {
                             .map(SoccerPlayer::getName).
                             collect(Collectors.toSet());
         }
-        updateUsersPoints(teamNameToPoints, teamsByStages, bestAttacks, worstDefenses, bestScorers);
+        updateUsersPoints(teamsByStages, bestAttacks, worstDefenses, bestScorers);
     }
 
-    private Map<String, Integer> calculateTeamPoints(Map<String, TeamGamesBalance> teamResults) {
+    @Override
+    public Map<String, Integer> getTeamToPointsMap() {
+        Map<String, TeamGamesBalance> teamResults = teamsService.getTeamGamesBalance();
         Map<String, Integer> map = new HashMap<>();
 
         for (Map.Entry<String, TeamGamesBalance> entry : teamResults.entrySet()) {
             map.put(entry.getKey(), calcPointsForBalance(entry.getValue()));
         }
 
+        teamsService.getAllTeams().
+                forEach(x-> map.putIfAbsent(x.getName(), 0));
         return map;
     }
 
@@ -106,7 +107,8 @@ public class PointsCalculatorServiceImpl implements PointsCalculatorService {
         return scoreA > scoreB ? Optional.of(finalGame.getTeam1()) : Optional.of(finalGame.getTeam2());
     }
 
-    private void updateUsersPoints(Map<String, Integer> teamNameToPoints, Map<GameStage, List<String>> teamsByStages, Set<String> bestAttacks, Set<String> worstDefenses, Set<String> bestScorers) {
+    private void updateUsersPoints(Map<GameStage, List<String>> teamsByStages, Set<String> bestAttacks, Set<String> worstDefenses, Set<String> bestScorers) {
+        Map<String, Integer> teamNameToPoints = getTeamToPointsMap();
         ArrayList<User> users = usersService.getAllUsers();
         Map<User, Integer> userToPoints = new HashMap<>();
 
