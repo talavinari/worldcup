@@ -8,4 +8,6 @@ public interface UsersService {
     ArrayList<User> getAllUsers();
 
     User save(User newUser);
+
+    User getSelfUser();
 }

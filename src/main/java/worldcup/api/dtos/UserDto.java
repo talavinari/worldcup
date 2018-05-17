@@ -1,26 +1,20 @@
 package worldcup.api.dtos;
 
-import worldcup.persistance.entities.Bet;
-import worldcup.persistance.entities.Group;
-
 import javax.validation.constraints.Email;
 import java.util.Objects;
 
 public class UserDto {
-
     private Long id;
     private String name;
     private String email;
     private Integer points;
-    private Group group;
-    private Bet bet;
+    private String group;
 
-    public UserDto(String name, @Email String email, Integer points, Group group, Bet bet) {
+    public UserDto(String name, @Email String email, Integer points, String group) {
         this.name = name;
         this.email = email;
         this.points = points;
         this.group = group;
-        this.bet = bet;
     }
 
     public UserDto() {
@@ -58,20 +52,12 @@ public class UserDto {
         this.points = points;
     }
 
-    public Group getGroup() {
+    public String getGroup() {
         return group;
     }
 
-    public void setGroup(Group group) {
+    public void setGroup(String group) {
         this.group = group;
-    }
-
-    public Bet getBet() {
-        return bet;
-    }
-
-    public void setBet(Bet bet) {
-        this.bet = bet;
     }
 
     @Override
@@ -83,14 +69,13 @@ public class UserDto {
                 Objects.equals(name, userDto.name) &&
                 Objects.equals(email, userDto.email) &&
                 Objects.equals(points, userDto.points) &&
-                Objects.equals(group, userDto.group) &&
-                Objects.equals(bet, userDto.bet);
+                Objects.equals(group, userDto.group) ;
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, name, email, points, group, bet);
+        return Objects.hash(id, name, email, points, group);
     }
 
     @Override
@@ -101,7 +86,6 @@ public class UserDto {
                 ", email='" + email + '\'' +
                 ", points=" + points +
                 ", group=" + group +
-                ", bet=" + bet +
                 '}';
     }
 }

@@ -100,13 +100,14 @@ public class ConverterServiceImpl implements ConverterService {
 
     @Override
     public UserDto covertUserToUserDto(User user) {
+        if (user == null) {
+            return new UserDto();
+        }
         return new UserDto(
                 user.getName(),
                 user.getEmail(),
                 user.getPoints(),
-                user.getGroup(),
-                user.getBet()
-        );
+                user.getGroup().getName());
     }
 
     @Override
