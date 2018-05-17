@@ -1,31 +1,23 @@
 package worldcup.api.dtos;
 
-import javax.validation.constraints.Email;
 import java.util.Objects;
 
 public class UserDto {
-    private Long id;
     private String name;
     private String email;
     private Integer points;
     private String group;
+    private String thumbNailData;
 
-    public UserDto(String name, @Email String email, Integer points, String group) {
+    public UserDto(String name, String email, Integer points, String group, String thumbNailData) {
         this.name = name;
         this.email = email;
         this.points = points;
         this.group = group;
+        this.thumbNailData =  thumbNailData;
     }
 
     public UserDto() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -60,32 +52,37 @@ public class UserDto {
         this.group = group;
     }
 
+    public String getThumbNailData() {
+        return thumbNailData;
+    }
+
+    public void setThumbNailData(String thumbNailData) {
+        this.thumbNailData = thumbNailData;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserDto userDto = (UserDto) o;
-        return Objects.equals(id, userDto.id) &&
-                Objects.equals(name, userDto.name) &&
+        return Objects.equals(name, userDto.name) &&
                 Objects.equals(email, userDto.email) &&
-                Objects.equals(points, userDto.points) &&
-                Objects.equals(group, userDto.group) ;
+                Objects.equals(group, userDto.group);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, name, email, points, group);
+        return Objects.hash(name, email, group);
     }
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
+        return "UserDto{" +
+                "name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", points=" + points +
-                ", group=" + group +
+                ", group='" + group + '\'' +
                 '}';
     }
 }

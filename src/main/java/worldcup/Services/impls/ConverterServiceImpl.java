@@ -1,7 +1,11 @@
 package worldcup.Services.impls;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import worldcup.Services.Person;
 import worldcup.Services.interfaces.ConverterService;
+import worldcup.Services.interfaces.LdapDataService;
+import worldcup.Services.interfaces.UsersService;
 import worldcup.api.dtos.*;
 import worldcup.persistance.entities.*;
 
@@ -16,6 +20,12 @@ import java.util.stream.Collectors;
 public class ConverterServiceImpl implements ConverterService {
 
     private static final String DATE_FORMAT_FOR_UI = "dd/MM HH:mm";
+
+    @Autowired
+    private LdapDataService ldapDataService;
+
+    @Autowired
+    private UsersService usersService;
 
     @Override
     public TeamDto convertTeamToTeamDto(Team team) {
@@ -103,11 +113,17 @@ public class ConverterServiceImpl implements ConverterService {
         if (user == null) {
             return new UserDto();
         }
+
+        String userName = usersService.getCurrentLoggedInUserName();
+
+        Person moreDataFromLdap = ldapDataService.findBysAMAccountName(userName);
+
         return new UserDto(
                 user.getName(),
-                user.getEmail(),
-                user.getPoints(),
-                user.getGroup().getName());
+                moreDataFromLdap.getMail(),
+                user.getPoints()== null ? 0 : user.getPoints(),
+                user.getGroup() == null ? moreDataFromLdap.getDepartment() : user.getGroup().getName(),
+                moreDataFromLdap.getThumbnailPhoto());
     }
 
     @Override

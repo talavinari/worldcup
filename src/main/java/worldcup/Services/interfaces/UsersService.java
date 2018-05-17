@@ -9,5 +9,7 @@ public interface UsersService {
 
     User save(User newUser);
 
+    String getCurrentLoggedInUserName();
+
     User getSelfUser();
 }
