@@ -10,4 +10,5 @@ public interface BetsService {
     ArrayList<Bet> getAllBets();
     void validateBet(BetDto bet);
     void save(Bet bet);
+    Bet findBetForUser();
 }

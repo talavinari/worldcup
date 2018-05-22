@@ -19,14 +19,14 @@ public class User {
     @Column(name = "points")
     private Integer points;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "group_id")
-    private Group group;
+    @Column(name = "group_name")
+    private String group;
 
-    @OneToOne(fetch=FetchType.LAZY, mappedBy="user", cascade = CascadeType.ALL)
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private Bet bet;
 
-    public User(String name, @Email String email, Integer points, Group group, Bet bet) {
+    public User(String name, @Email String email, Integer points, String group, Bet bet) {
         this.name = name;
         this.email = email;
         this.points = points;
@@ -69,20 +69,20 @@ public class User {
         this.points = points;
     }
 
-    public Group getGroup() {
-        return group;
-    }
-
-    public void setGroup(Group group) {
-        this.group = group;
-    }
-
     public Bet getBet() {
         return bet;
     }
 
     public void setBet(Bet bet) {
         this.bet = bet;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
     }
 
     @Override

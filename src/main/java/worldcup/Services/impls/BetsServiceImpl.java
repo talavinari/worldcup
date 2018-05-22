@@ -6,12 +6,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import worldcup.Services.interfaces.BetsService;
 import worldcup.Services.interfaces.TeamsService;
+import worldcup.Services.interfaces.UsersService;
 import worldcup.api.dtos.BetDto;
 import worldcup.persistance.entities.Bet;
 import worldcup.persistance.entities.Team;
+import worldcup.persistance.entities.User;
 import worldcup.persistance.repository.BetRepository;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,6 +27,9 @@ public class BetsServiceImpl implements BetsService {
     @Autowired
     private TeamsService teamsService;
 
+    @Autowired
+    private UsersService usersService;
+
     @Override
     public ArrayList<Bet> getAllBets() {
         return Lists.newArrayList(betRepository.findAll());
@@ -31,7 +37,6 @@ public class BetsServiceImpl implements BetsService {
 
     @Override
     public void validateBet(BetDto bet) {
-        validateUserDetails(bet);
         validateTeamNames(bet);
         validateBetDetails(bet);
     }
@@ -39,6 +44,18 @@ public class BetsServiceImpl implements BetsService {
     @Override
     public void save(Bet bet) {
         betRepository.save(bet);
+    }
+
+    @Override
+    public Bet findBetForUser() {
+        User userFromDB = usersService.getUserFromDB();
+        List<Bet> betsByUser = betRepository.findBetsByUser(userFromDB);
+        if (betsByUser.isEmpty()){
+            return null;
+        }
+        else{
+            return betsByUser.get(0);
+        }
     }
 
     private void validateTeamNames(BetDto bet) {
@@ -93,25 +110,5 @@ public class BetsServiceImpl implements BetsService {
         if(StringUtils.isEmpty(bet.getWorstDefence())) {
             throw new RuntimeException("Worst Defence is missing");
         }
-    }
-
-    private void validateUserDetails(BetDto bet) {
-        if(StringUtils.isEmpty(bet.getName())) {
-            throw new RuntimeException("User name is missing");
-        }
-        if(StringUtils.isEmpty(bet.getEmail())) {
-            throw new RuntimeException("User's Email is missing");
-        }
-        if(StringUtils.isEmpty(bet.getGroupId())) {
-            throw new RuntimeException("Group id is missing");
-        }
-
-        try {
-            Long.parseLong(bet.getGroupId());
-        }
-        catch (Exception e){
-            throw new RuntimeException("Invalid group id number");
-        }
-
     }
 }

@@ -9,10 +9,6 @@ public class BetDto {
     private String bestScorer;
     private String bestAttack;
     private String worstDefence;
-    private String name;
-    private String email;
-    private String groupId;
-
     public BetDto() {
     }
 
@@ -82,30 +78,6 @@ public class BetDto {
         this.worstDefence = worstDefence;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
-    }
-
     @Override
     public String toString() {
         return "BetDto{" +
@@ -116,9 +88,6 @@ public class BetDto {
                 ", bestScorer='" + bestScorer + '\'' +
                 ", bestAttack='" + bestAttack + '\'' +
                 ", worstDefence='" + worstDefence + '\'' +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", groupId='" + groupId + '\'' +
                 '}';
     }
 }

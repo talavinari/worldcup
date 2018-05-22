@@ -2,6 +2,7 @@ package worldcup.Services.impls;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import worldcup.Services.Person;
 import worldcup.Services.interfaces.ConverterService;
 import worldcup.Services.interfaces.LdapDataService;
@@ -69,7 +70,7 @@ public class ConverterServiceImpl implements ConverterService {
                         teamToPointsMap.get(x.getRankD()),
                         x.getBestScorer(),
                         x.getBestAttack(), x.getWorstDefence(), x.getUser().getName(),
-                        x.getUser().getEmail(), x.getUser().getPoints(), x.getUser().getGroup().getName());
+                        x.getUser().getEmail(), x.getUser().getPoints(), x.getUser().getGroup());
     }
 
     @Override
@@ -94,21 +95,6 @@ public class ConverterServiceImpl implements ConverterService {
     }
 
     @Override
-    public GroupDto covertGroupToGroupDto(Group group) {
-        return new GroupDto(
-                group.getId(),
-                group.getName()
-        );
-    }
-
-    @Override
-    public List<GroupDto> covertGroupsToGroupDtos(List<Group> groups) {
-        List<GroupDto> groupDtos = new ArrayList<>();
-        groups.forEach(x -> groupDtos.add(covertGroupToGroupDto(x)));
-        return groupDtos;
-    }
-
-    @Override
     public UserDto covertUserToUserDto(User user) {
         if (user == null) {
             return new UserDto();
@@ -122,7 +108,7 @@ public class ConverterServiceImpl implements ConverterService {
                 user.getName(),
                 moreDataFromLdap.getMail(),
                 user.getPoints()== null ? 0 : user.getPoints(),
-                user.getGroup() == null ? moreDataFromLdap.getDepartment() : user.getGroup().getName(),
+                StringUtils.isEmpty(user.getGroup()) ? moreDataFromLdap.getDepartment() : user.getGroup(),
                 moreDataFromLdap.getThumbnailPhoto());
     }
 

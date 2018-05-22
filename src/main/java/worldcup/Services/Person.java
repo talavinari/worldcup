@@ -13,6 +13,8 @@ public class Person {
     @DnAttribute(value="cn", index=1)
     private String fullName;
 
+    private String name;
+
     // No @Attribute annotation means this will be bound to the LDAP attribute
     // with the same value
     private String department;
@@ -80,6 +82,14 @@ public class Person {
 
     public String getMail() {
         return mail;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setMail(String mail) {
